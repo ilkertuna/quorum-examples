@@ -13,6 +13,7 @@ x-quorum-def:
   image: "${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}"
   expose:
     - "21000"
+    - "23000"
     - "50400"
   healthcheck:
     test: ["CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8545"]
@@ -69,6 +70,11 @@ x-quorum-def:
         --rpcport 8545 \
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${QUORUM_CONSENSUS:-istanbul} \
         --port 21000 \
+        --ws \
+        --wsapi db,eth,net,web3,personal,txpool,admin \
+        --wsaddr 0.0.0.0 \
+        --wsport 23000 \
+        --wsorigins=* \
         --unlock 0 \
         --password /examples/passwords.txt \
         ${QUORUM_GETH_ARGS:-} $${GETH_ARGS_${QUORUM_CONSENSUS:-istanbul}}
@@ -233,6 +239,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
+      - "23000:23000"
     volumes:
       - vol1:/qdata
       - ./examples/7nodes:/examples:ro
@@ -451,11 +458,3 @@ networks:
       config:
       - subnet: 172.16.239.0/24
 volumes:
-  "vol1":
-  "vol2":
-  "vol3":
-  "vol4":
-  "vol5":
-  "vol6":
-  "vol7":
-  "cakeshopvol":
